@@ -1,0 +1,6 @@
+.vs/
+bin/
+obj/
+playwright-report/
+test-results/
+node_modules/
