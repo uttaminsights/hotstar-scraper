@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 
 namespace HotstarScraper.Services
 {
@@ -22,11 +17,46 @@ namespace HotstarScraper.Services
 
             var page = await browser.NewPageAsync();
 
-            await page.GotoAsync("https://www.hotstar.com/in");
+            await page.GotoAsync(
+                "https://www.hotstar.com/in",
+                new PageGotoOptions
+                {
+                    WaitUntil = WaitUntilState.NetworkIdle
+                });
 
-            await page.WaitForTimeoutAsync(5000);
+            Console.WriteLine("Page Loaded");
 
-            Console.WriteLine(await page.TitleAsync());
+            await AutoScrollAsync(page);
+
+            Console.WriteLine("Scrolling Completed");
+
+            Console.ReadLine();
+        }
+
+        private async Task AutoScrollAsync(IPage page)
+        {
+            int previousHeight = 0;
+
+            while (true)
+            {
+                int currentHeight = await page.EvaluateAsync<int>(
+                    "document.body.scrollHeight");
+
+                await page.EvaluateAsync(
+                    "window.scrollTo(0, document.body.scrollHeight)");
+
+                Console.WriteLine($"Scrolled To: {currentHeight}");
+
+                await page.WaitForTimeoutAsync(3000);
+
+                if (currentHeight == previousHeight)
+                {
+                    Console.WriteLine("End of page reached");
+                    break;
+                }
+
+                previousHeight = currentHeight;
+            }
         }
     }
 }
