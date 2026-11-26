@@ -1,6 +1,11 @@
 .vs/
+.vscode/
 bin/
 obj/
+*.user
 playwright-report/
 test-results/
 node_modules/
+
+# scraped data - every run writes a new timestamped folder here
+output/

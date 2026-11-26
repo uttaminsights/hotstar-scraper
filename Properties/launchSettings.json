@@ -3,8 +3,9 @@
     "HotstarScraper": {
       "commandName": "Project"
     },
-    "Container (Dockerfile)": {
-      "commandName": "Docker"
+    "HotstarScraper (show browser)": {
+      "commandName": "Project",
+      "commandLineArgs": "--headed"
     }
   }
 }

@@ -1,0 +1,303 @@
+{
+  "sourceUrl": "https://www.hotstar.com/in",
+  "scrapedAt": "2026-11-26T18:02:53.6285905Z",
+  "apiResponsesCaptured": 7,
+  "promotions": [
+    {
+      "position": 1,
+      "title": "Bigg Boss",
+      "description": "Milega vardaan, ya machega toofan? Your ‘host-dost’ Salman Khan brings season 20 of the greatest reality show, serving entertainment and drama—unfiltered!",
+      "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/998/1788701930998-i",
+      "redirectUrl": "https://www.hotstar.com/in/shows/bigg-boss/1971002586",
+      "contentId": "1971002586",
+      "tags": [
+        "2026",
+        "U/A 16+",
+        "Hindi"
+      ],
+      "callouts": [
+        "Free For You",
+        "#1 in Hindi Today"
+      ],
+      "scrapedAt": "2026-11-26T18:02:53.6285905Z"
+    },
+    {
+      "position": 2,
+      "title": "Dig",
+      "description": "\"Dig\" follows a team of dedicated archaeologists (and less-dedicated college students) who spend their summer working on a dig site in Greece.",
+      "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/8112/1795179208112-i",
+      "redirectUrl": "https://www.hotstar.com/in/shows/dig/1271725662",
+      "contentId": "1271725662",
+      "tags": [
+        "2026",
+        "U/A 16+",
+        "1 Season",
+        "English"
+      ],
+      "callouts": [
+        "New Release"
+      ],
+      "scrapedAt": "2026-11-26T18:02:53.6285905Z"
+    },
+    {
+      "position": 3,
+      "title": "Dil Ki Bewafaiyaan",
+      "description": "Married to his best friend Janaki, Manav longs for the grand love story they never lived. Now in his forties, can he give their bond a romantic makeover?",
+      "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/7023/1795678157023-i",
+      "redirectUrl": "https://www.hotstar.com/in/shows/dil-ki-bewafaiyaan/1271715504",
+      "contentId": "1271715504",
+      "tags": [
+        "2026",
+        "U/A 13+",
+        "Hindi"
+      ],
+      "callouts": [
+        "Free For You",
+        "New Release"
+      ],
+      "scrapedAt": "2026-11-26T18:02:53.6285905Z"
+    }
+  ],
+  "trays": [
+    {
+      "position": 1,
+      "title": "New on JioHotstar",
+      "layout": "vertical content poster",
+      "items": [
+        {
+          "position": 1,
+          "title": "Supergirl",
+          "description": "In its inaugural flight into the new DC Cinematic Universe, \"Supergirl\" reveals the origin of the interplanetary nomad Kara Zor-El, aka Supergirl.",
+          "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/4224/1795259914224-v",
+          "url": "https://www.hotstar.com/in/movies/supergirl/1271725797",
+          "contentId": "1271725797",
+          "tags": [
+            "2026",
+            "U/A 16+",
+            "1h 48m",
+            "4 Languages",
+            "Super Heroes",
+            "Action",
+            "Adventure",
+            "Fantasy",
+            "Science Fiction",
+            "Young Adult",
+            "Alien",
+            "Based on Books",
+            "Coming-of-Age",
+            "DC Comics",
+            "Journey",
+            "Revenge",
+            "Good vs Evil",
+            "Exhilarating",
+            "Immersive",
+            "Metropolis/Big City",
+            "Workplace"
+          ]
+        },
+        {
+          "position": 2,
+          "title": "Fight Against Evil 3",
+          "description": "Detective Li Hongqi travels to a tropical island for his wedding but becomes involved in a criminal investigation and a rescue mission.",
+          "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/3956/1795603773956-v",
+          "url": "https://www.hotstar.com/in/movies/fight-against-evil-3/1271726789",
+          "contentId": "1271726789",
+          "tags": [
+            "2026",
+            "U/A 16+",
+            "1h 40m",
+            "3 Languages",
+            "Action",
+            "Comedy",
+            "Crime",
+            "Kidnapping",
+            "Organised Crime",
+            "Race Against Time",
+            "Investigative",
+            "Gripping",
+            "Intense",
+            "Island",
+            "Exotic Locales"
+          ]
+        },
+        {
+          "position": 3,
+          "title": "The Body",
+          "description": "When a businesswoman’s body vanishes from the morgue, an inspector’s investigation uncovers dark secrets surrounding her husband and her mysterious death.",
+          "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/3907/1795445193907-v",
+          "url": "https://www.hotstar.com/in/movies/the-body/1271726388",
+          "contentId": "1271726388",
+          "tags": [
+            "2019",
+            "U/A 16+",
+            "1h 37m",
+            "Hindi",
+            "Thriller",
+            "Mystery",
+            "Crime",
+            "Psychological",
+            "Investigative",
+            "Suspense",
+            "Murder",
+            "Infidelity",
+            "Betrayal",
+            "Revenge",
+            "Gripping",
+            "Curious"
+          ]
+        }
+      ]
+    },
+    {
+      "position": 2,
+      "title": "Free For You",
+      "layout": "vertical content poster",
+      "items": [
+        {
+          "position": 1,
+          "title": "Bigg Boss",
+          "description": "Milega vardaan, ya machega toofan? Your ‘host-dost’ Salman Khan brings season 20 of the greatest reality show, serving entertainment and drama—unfiltered!",
+          "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/1632/1789323791632-v",
+          "url": "https://www.hotstar.com/in/shows/bigg-boss/1971002586",
+          "contentId": "1971002586",
+          "tags": [
+            "2026",
+            "U/A 16+",
+            "Hindi",
+            "Reality",
+            "Rivalry",
+            "Controversial",
+            "Competition",
+            "Friendship",
+            "Games",
+            "Immersive",
+            "Intense",
+            "Curious",
+            "Confined Spaces",
+            "Free For You"
+          ]
+        },
+        {
+          "position": 2,
+          "title": "Yeh Rishta",
+          "description": "Misunderstandings created a rift between Abhira and Armaan! As the two navigate lost love and new worlds, will destiny pave the way for AbhiMaan’s reunion?",
+          "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/9005/1780496439005-v",
+          "url": "https://www.hotstar.com/in/shows/yeh-rishta/586",
+          "contentId": "586",
+          "tags": [
+            "2026",
+            "U/A 13+",
+            "Hindi",
+            "Drama",
+            "Joint Household",
+            "Couples",
+            "Parenthood",
+            "Family-Friendly",
+            "Tough Girls",
+            "Dysfunctional Relationships",
+            "Lovesick",
+            "Sentimental",
+            "Free For You"
+          ]
+        },
+        {
+          "position": 3,
+          "title": "Dhamaal with Pati Patni Aur Panga",
+          "description": "Fresh jodis, fresh chemistry, and full-on pange! Get ready for a fun-filled new season, where love meets nok-jhok, and the end result—bang-on dhamaal.",
+          "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/2543/1791644412543-v",
+          "url": "https://www.hotstar.com/in/shows/dhamaal-with-pati-patni-aur-panga/1271427882",
+          "contentId": "1271427882",
+          "tags": [
+            "2026",
+            "U/A 13+",
+            "Hindi",
+            "Reality",
+            "Comedy",
+            "Celebrities",
+            "Competition",
+            "Couples",
+            "Games",
+            "Relaxing",
+            "Free For You"
+          ]
+        }
+      ]
+    },
+    {
+      "position": 3,
+      "title": "Peacock's Finest",
+      "layout": "vertical content poster",
+      "items": [
+        {
+          "position": 1,
+          "title": "Koffee With Karan",
+          "description": "Gossip, glamour and unfiltered conversations! Karan Johar returns for the final season of this pop culture phenomenon with a potent brew of steaming hot koffee.",
+          "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/9995/1795614269995-v",
+          "url": "https://www.hotstar.com/in/shows/koffee-with-karan/1525",
+          "contentId": "1525",
+          "tags": [
+            "2026",
+            "U/A 16+",
+            "2 Languages",
+            "Talk Show",
+            "People & Culture",
+            "Celebrities",
+            "Showbiz",
+            "Controversial",
+            "Delightful",
+            "Feel Good",
+            "Curious",
+            "Relaxing"
+          ]
+        },
+        {
+          "position": 2,
+          "title": "Obsession",
+          "description": "A hopeless romantic finds himself getting exactly what he wished for but soon discovers that some desires come at a dark, sinister price.",
+          "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/9742/1793704419742-v",
+          "url": "https://www.hotstar.com/in/movies/obsession/1271707974",
+          "contentId": "1271707974",
+          "tags": [
+            "2026",
+            "A",
+            "1h 49m",
+            "6 Languages",
+            "Horror",
+            "Thriller",
+            "Supernatural",
+            "Psychological",
+            "Obsession",
+            "Dark",
+            "Trauma",
+            "Spine-Chilling",
+            "Intense"
+          ]
+        },
+        {
+          "position": 3,
+          "title": "Suits",
+          "description": "Merger turmoil. Mike's secret exposed? Harvey's future hangs in the balance.",
+          "imageUrl": "https://img10.hotstar.com/image/upload/f_auto/sources/r1/cms/prod/9655/1734497809655-v",
+          "url": "https://www.hotstar.com/in/shows/suits/1971002986",
+          "contentId": "1971002986",
+          "tags": [
+            "2019",
+            "U/A 16+",
+            "9 Seasons",
+            "3 Languages",
+            "Drama",
+            "White-Collar",
+            "Power Struggle",
+            "Bromance",
+            "Con Stories",
+            "Corruption",
+            "Curious",
+            "Workplace",
+            "Metropolis/Big City"
+          ]
+        }
+      ]
+    }
+  ],
+  "note": "Trimmed sample: a full run returned 8 promotions, 21 rows and 216 titles."
+}
