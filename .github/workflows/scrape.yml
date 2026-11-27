@@ -25,13 +25,13 @@ permissions:
 
 jobs:
   scrape:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # Playwright 1.60 does not support 26.04 (ubuntu-latest) yet
     timeout-minutes: 350     # GitHub's hard limit is 360
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: 8.0.x
 
@@ -58,7 +58,7 @@ jobs:
           dotnet bin/Release/net8.0/HotstarScraper.dll $FULL
 
       # run.json, promotions.csv and quality.txt of every run, kept for 14 days.
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: scrape-${{ github.run_number }}
