@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -10,12 +10,22 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Playwright" Version="1.60.0" />
+    <PackageReference Include="MySqlConnector" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- keep scraped data and sample files out of the build output -->
     <None Remove="output/**" />
     <Compile Remove="output/**" />
+    <!-- the dashboard is its own project -->
+    <Compile Remove="Dashboard/**" />
+    <None Remove="Dashboard/**" />
+    <Content Remove="Dashboard/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- the scraper creates its tables from this file at startup -->
+    <None Include="db/schema.sql" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
