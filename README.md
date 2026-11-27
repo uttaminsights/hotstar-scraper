@@ -9,7 +9,7 @@
 ![Playwright](https://img.shields.io/badge/Playwright-1.60-2EAD33?logo=playwright&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
-![A scraper run](docs/run.png)
+![The dashboard overview](docs/images/overview.png)
 
 </div>
 
@@ -130,6 +130,12 @@ Built by <a href="https://github.com/uttaminsights"><b>UttamInsights</b></a>
 
 A dark, local dashboard over the MySQL data: Overview, Movies, TV Shows (seasons and episodes), Home Page (what Hotstar promoted, row by row) and Runs.
 The **Start run** button scrapes on this laptop. Hotstar India blocks servers outside India, so the scraper has to run from an Indian connection.
+
+| Movies: search, genre, language and rating filters | Movie page: image on the left, all details on the right |
+|---|---|
+| ![Movies page](docs/images/movies.png) | ![Movie detail page](docs/images/movie.png) |
+| **TV show page: seasons and episodes** | **A scraper run in the terminal** |
+| ![TV show detail page](docs/images/show.png) | ![A scraper run](docs/run.png) |
 
 **Install (no source code needed)**
 1. Download `HotstarDashboard.zip` from the latest [release](../../releases) and unzip it, for example to `C:\HotstarDashboard`.
