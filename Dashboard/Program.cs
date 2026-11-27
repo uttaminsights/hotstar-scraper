@@ -8,14 +8,35 @@ using MySqlConnector;
 string connectionString = Environment.GetEnvironmentVariable("HOTSTAR_DB")
     ?? Environment.GetEnvironmentVariable("HOTSTAR_DB", EnvironmentVariableTarget.User)
     ?? "";
+// Packaged (the exe from the GitHub release): wwwroot and the scraper sit next to the exe.
+string exeDir = AppContext.BaseDirectory;
+bool packaged = Directory.Exists(Path.Combine(exeDir, "wwwroot"));
+
 if (connectionString == "")
 {
     Console.Error.WriteLine("Set HOTSTAR_DB to the MySQL connection string first (the same one the scraper uses).");
+    if (packaged) { Console.WriteLine("Press Enter to close."); Console.ReadLine(); }
     return 1;
 }
 
-var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls(builder.Configuration["urls"] ?? "http://localhost:5080");
+// Double-clicked while the dashboard is already running: just open it again.
+if (packaged)
+{
+    try
+    {
+        using var probe = new System.Net.Sockets.TcpClient();
+        probe.Connect("127.0.0.1", 5080);
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("http://localhost:5080") { UseShellExecute = true });
+        return 0;
+    }
+    catch (System.Net.Sockets.SocketException) { /* not running yet - start it below */ }
+}
+var builder = WebApplication.CreateBuilder(packaged
+    ? new WebApplicationOptions { Args = args, ContentRootPath = exeDir }
+    : new WebApplicationOptions { Args = args });
+string url = builder.Configuration["urls"] ?? "http://localhost:5080";
+builder.WebHost.UseUrls(url);
+builder.Logging.SetMinimumLevel(LogLevel.Warning);
 var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
@@ -35,12 +56,18 @@ app.MapGet("/api/overview", async () =>
         """))[0];
 
     var topMovies = await db.QueryAsync("""
-        SELECT content_id, title, release_year, imdb_rating, genres, languages, image_url
-        FROM movies WHERE imdb_rating IS NOT NULL ORDER BY imdb_rating DESC, release_year DESC LIMIT 10
+        SELECT content_id, title, description, release_year, age_rating, imdb_rating, runtime_minutes, genres, languages, image_url, title_image_url
+        FROM movies WHERE imdb_rating IS NOT NULL ORDER BY imdb_rating DESC, release_year DESC LIMIT 20
         """);
     var topShows = await db.QueryAsync("""
-        SELECT content_id, title, release_year, imdb_rating, season_count, genres, languages, image_url
-        FROM tv_shows WHERE imdb_rating IS NOT NULL ORDER BY imdb_rating DESC, season_count DESC LIMIT 10
+        SELECT content_id, title, description, release_year, age_rating, imdb_rating, season_count, genres, languages, image_url, title_image_url
+        FROM tv_shows WHERE imdb_rating IS NOT NULL ORDER BY imdb_rating DESC, season_count DESC LIMIT 20
+        """);
+    var newest = await db.QueryAsync("""
+        SELECT * FROM (
+          SELECT 'movie' kind, content_id, title, release_year, imdb_rating, languages, image_url FROM movies
+          UNION ALL SELECT 'show', content_id, title, release_year, imdb_rating, languages, image_url FROM tv_shows
+        ) x WHERE release_year IS NOT NULL ORDER BY release_year DESC, imdb_rating IS NULL, imdb_rating DESC LIMIT 20
         """);
     var biggestShows = await db.QueryAsync("""
         SELECT s.content_id, s.title, s.imdb_rating, COUNT(e.episode_id) episodes
@@ -72,7 +99,7 @@ app.MapGet("/api/overview", async () =>
 
     return Results.Json(new
     {
-        counts, topMovies, topShows, biggestShows,
+        counts, topMovies, topShows, newest, biggestShows,
         genres = MergeLanguages(genres, isLanguage: false),
         languages = MergeLanguages(languages, isLanguage: true),
         ratings
@@ -161,7 +188,7 @@ app.MapGet("/api/shows/{id}", async (string id) =>
     if (rows.Count == 0) return Results.NotFound();
     var seasons = await db.QueryAsync("""
         SELECT s.season_id, s.season_number, s.title, s.episode_count announced,
-               (SELECT COUNT(*) FROM episodes e WHERE e.season_id = s.season_id) stored
+               (SELECT COUNT(*) FROM episodes e WHERE e.season_id = s.season_id) `stored`
         FROM seasons s WHERE s.show_id = @id ORDER BY s.position
         """, new() { ["@id"] = id });
     var promos = await PromotionsFor(id);
@@ -172,7 +199,7 @@ app.MapGet("/api/seasons/{id}/episodes", async (string id, int? page) =>
 {
     int offset = (Math.Max(page ?? 1, 1) - 1) * 100;
     var items = await db.QueryAsync($"""
-        SELECT episode_id, episode_number, title, description, air_date, runtime_minutes, url
+        SELECT episode_id, episode_number, title, description, air_date, runtime_minutes, url, image_url
         FROM episodes WHERE season_id = @id ORDER BY episode_number DESC, air_date DESC LIMIT 100 OFFSET {offset}
         """, new() { ["@id"] = id });
     return Results.Json(new { items });
@@ -217,6 +244,45 @@ app.MapGet("/api/promotions", async (string? run) =>
     return Results.Json(new { run = runId, runs, sections });
 });
 
+// ---------- Scrape runs (started from the dashboard, run on this laptop) ----------
+// Packaged: run scraper\HotstarScraper.exe and keep output in the user's AppData.
+// From source: "dotnet run" the scraper project in the repo folder.
+string repoRoot = packaged
+    ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "HotstarDashboard")
+    : builder.Configuration["ScraperFolder"] ?? Directory.GetParent(app.Environment.ContentRootPath)!.FullName;
+Directory.CreateDirectory(repoRoot);
+string? scraperExe = packaged ? Path.Combine(exeDir, "scraper", "HotstarScraper.exe") : null;
+var runner = new ScrapeRunner(repoRoot, scraperExe, connectionString);
+
+app.MapGet("/api/run/status", () => Results.Json(runner.Status()));
+
+app.MapPost("/api/run/start", (bool? full) =>
+{
+    string? problem = runner.Start(full == true);
+    return problem is null ? Results.Json(runner.Status()) : Results.Conflict(new { error = problem });
+});
+
+app.MapPost("/api/run/stop", () => { runner.Stop(); return Results.Json(runner.Status()); });
+
+// Past runs: every output folder that has a quality report.
+app.MapGet("/api/runs", () =>
+{
+    string output = Path.Combine(repoRoot, "output");
+    if (!Directory.Exists(output)) return Results.Json(Array.Empty<object>());
+    var runs = Directory.GetDirectories(output)
+        .Where(d => File.Exists(Path.Combine(d, "quality.txt")))
+        .OrderByDescending(d => Path.GetFileName(d))
+        .Take(30)
+        .Select(d => new { folder = Path.GetFileName(d), quality = File.ReadAllText(Path.Combine(d, "quality.txt")) });
+    return Results.Json(runs);
+});
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    Console.WriteLine($"Hotstar dashboard is running at {url}  (close this window to stop it)");
+    if (packaged)
+        try { System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true }); } catch { }
+});
 app.Run();
 return 0;
 
@@ -251,6 +317,96 @@ static class Languages
     {
         if (list is not JsonArray arr) return list;
         return new JsonArray(arr.Select(n => (JsonNode?)JsonValue.Create(ToEnglish(n?.GetValue<string>() ?? ""))).Distinct().ToArray());
+    }
+}
+
+/// <summary>Starts the scraper as a separate process and keeps its log, so the dashboard can show progress.</summary>
+sealed class ScrapeRunner(string repoRoot, string? scraperExe, string connectionString)
+{
+    private readonly object gate = new();
+    private System.Diagnostics.Process? process;
+    private readonly List<string> lines = [];
+    private DateTime? startedAt, endedAt;
+    private int? exitCode;
+    private bool full;
+    private string? logFile;
+
+    public string? Start(bool fullRun)
+    {
+        lock (gate)
+        {
+            if (process is { HasExited: false }) return "A run is already in progress.";
+            string project = Path.Combine(repoRoot, "HotstarScraper.csproj");
+            if (scraperExe is not null ? !File.Exists(scraperExe) : !File.Exists(project))
+                return $"Scraper not found at {scraperExe ?? project}";
+
+            Directory.CreateDirectory(Path.Combine(repoRoot, "output", "logs"));
+            logFile = Path.Combine(repoRoot, "output", "logs", $"run-{DateTime.Now:yyyyMMdd-HHmmss}.log");
+            lines.Clear();
+            startedAt = DateTime.Now; endedAt = null; exitCode = null; full = fullRun;
+
+            var psi = new System.Diagnostics.ProcessStartInfo(scraperExe ?? "dotnet")
+            {
+                WorkingDirectory = repoRoot,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                StandardOutputEncoding = System.Text.Encoding.UTF8,
+                StandardErrorEncoding = System.Text.Encoding.UTF8
+            };
+            if (scraperExe is null)
+                foreach (string a in new[] { "run", "--project", project, "-c", "Release", "--" }) psi.ArgumentList.Add(a);
+            if (fullRun) psi.ArgumentList.Add("--full");
+            psi.Environment["HOTSTAR_DB"] = connectionString;
+
+            process = new System.Diagnostics.Process { StartInfo = psi, EnableRaisingEvents = true };
+            process.OutputDataReceived += (_, e) => Add(e.Data);
+            process.ErrorDataReceived += (_, e) => Add(e.Data);
+            process.Exited += (_, _) => { lock (gate) { endedAt = DateTime.Now; exitCode = process?.ExitCode; } };
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            return null;
+        }
+    }
+
+    public void Stop()
+    {
+        lock (gate)
+        {
+            if (process is { HasExited: false }) process.Kill(entireProcessTree: true);
+            Add("Stopped from the dashboard. Titles finished before this point are already saved.");
+        }
+    }
+
+    private void Add(string? line)
+    {
+        if (line is null) return;
+        lock (gate)
+        {
+            lines.Add(line);
+            if (lines.Count > 2000) lines.RemoveRange(0, 500);
+            if (logFile != null) File.AppendAllText(logFile, line + Environment.NewLine);
+        }
+    }
+
+    public object Status()
+    {
+        lock (gate)
+        {
+            bool running = process is { HasExited: false };
+            // "[12/649]" in the newest progress line tells how far the title pages are.
+            string? progress = lines.LastOrDefault(l => System.Text.RegularExpressions.Regex.IsMatch(l, @"\[\d+/\d+\]"));
+            var m = progress is null ? null : System.Text.RegularExpressions.Regex.Match(progress, @"\[(\d+)/(\d+)\]");
+            return new
+            {
+                running, full, startedAt, endedAt, exitCode,
+                done = m?.Success == true ? int.Parse(m.Groups[1].Value) : (int?)null,
+                total = m?.Success == true ? int.Parse(m.Groups[2].Value) : (int?)null,
+                log = lines.TakeLast(60).ToList()
+            };
+        }
     }
 }
 

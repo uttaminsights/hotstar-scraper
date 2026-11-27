@@ -1,0 +1,39 @@
+name: Build dashboard app
+
+# Builds HotstarDashboard.zip (dashboard + scraper, no .NET install needed) and attaches it to a GitHub release.
+# Runs when a version tag is pushed (git tag v1.0.0 && git push origin v1.0.0) or from the Actions tab.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish
+        shell: pwsh
+        run: |
+          $out = "$env:RUNNER_TEMP\HotstarDashboard"
+          dotnet publish Dashboard/Dashboard.csproj -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o $out
+          dotnet publish HotstarScraper.csproj -c Release -r win-x64 --self-contained -o "$out\scraper"
+          Remove-Item "$out\*.pdb", "$out\scraper\*.pdb" -ErrorAction SilentlyContinue
+          Compress-Archive -Path "$out\*" -DestinationPath HotstarDashboard.zip
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || format('build-{0}', github.run_number) }}
+          name: Hotstar Dashboard ${{ github.ref_type == 'tag' && github.ref_name || format('build {0}', github.run_number) }}
+          files: HotstarDashboard.zip
+          body: |
+            Download **HotstarDashboard.zip**, unzip it (for example to C:\HotstarDashboard) and double-click **HotstarDashboard.exe**.
+            Needs MySQL on this computer and the HOTSTAR_DB setting (see README).

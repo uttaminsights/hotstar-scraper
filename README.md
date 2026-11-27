@@ -125,3 +125,21 @@ This is a learning and portfolio project. Respect Hotstar's terms of use, and do
 <div align="center">
 Built by <a href="https://github.com/uttaminsights"><b>UttamInsights</b></a>
 </div>
+
+## Dashboard app (Windows)
+
+A dark, local dashboard over the MySQL data: Overview, Movies, TV Shows (seasons and episodes), Home Page (what Hotstar promoted, row by row) and Runs.
+The **Start run** button scrapes on this laptop. Hotstar India blocks servers outside India, so the scraper has to run from an Indian connection.
+
+**Install (no source code needed)**
+1. Download `HotstarDashboard.zip` from the latest [release](../../releases) and unzip it, for example to `C:\HotstarDashboard`.
+2. Set the MySQL login once (PowerShell):
+   `[Environment]::SetEnvironmentVariable("HOTSTAR_DB", "Server=localhost;Port=3306;Database=hotstar;User ID=root;Password=...;", "User")`
+3. Double-click `HotstarDashboard.exe` (or make a desktop shortcut). It opens http://localhost:5080. Keep its window open while you use it.
+
+The first run downloads Chromium for the scraper (about 150 MB, once). Run logs and reports go to `%LOCALAPPDATA%\HotstarDashboard\output`.
+**Start run** updates the home page, new episodes and movies older than 7 days; **Full run** re-scrapes everything (about 3 hours). Run it about once a month.
+
+**From source:** `dotnet run --project Dashboard`
+
+**New release:** `git tag v1.0.1 && git push origin v1.0.1` builds the zip on GitHub (`.github/workflows/release.yml`).

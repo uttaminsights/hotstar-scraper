@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>HotstarDashboard</RootNamespace>
+    <AssemblyName>HotstarDashboard</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

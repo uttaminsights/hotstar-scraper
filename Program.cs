@@ -32,6 +32,10 @@ namespace HotstarScraper
                     Log.Info("Connected to MySQL; tables are ready");
                 }
 
+                // Downloads Chromium the first time (about 150 MB); a no-op once it is installed.
+                if (Microsoft.Playwright.Program.Main(["install", "chromium"]) != 0)
+                    Log.Warn("Could not install Chromium automatically; trying the installed one");
+
                 using var playwright = await Playwright.CreateAsync();
                 await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = options.Headless });
                 await using var context = await browser.NewContextAsync(new BrowserNewContextOptions
